@@ -7,7 +7,7 @@ class EpsilonGreedy(BaseAgent):
     def __init__(self, n_arms: int, epsilon: float = 0.1, arm_names: list = None):
         super().__init__(n_arms, arm_names)
         self.epsilon = epsilon
-        self.algorithm_name = "Epsilon-Greedy"
+        self.algorithm_name = "epsilon_greedy"
     
     def select_arm(self) -> int:
         """
@@ -30,3 +30,12 @@ class EpsilonGreedy(BaseAgent):
         stats["epsilon"] = self.epsilon
         stats["algorithm"] = self.algorithm_name
         return stats
+        
+    def save_state(self, filepath: str):
+        """Save state including epsilon"""
+        super().save_state(filepath, epsilon=self.epsilon)
+        
+    def load_state(self, filepath: str):
+        """Load state including epsilon"""
+        state = super().load_state(filepath)
+        self.epsilon = state.get("epsilon", 0.1)

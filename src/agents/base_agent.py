@@ -42,7 +42,7 @@ class BaseAgent(ABC):
             "arm_names": self.arm_names
         }
     
-    def save_state(self, filepath: str):
+    def save_state(self, filepath: str, **kwargs):
         """Save agent state to file"""
         state = {
             "n_arms": self.n_arms,
@@ -53,6 +53,14 @@ class BaseAgent(ABC):
             "total_pulls": self.total_pulls,
             "timestamp": datetime.now().isoformat()
         }
+        
+        # Add algorithm name if available
+        if hasattr(self, 'algorithm_name'):
+            state["algorithm"] = self.algorithm_name
+            
+        # Add any extra fields from subclasses
+        state.update(kwargs)
+        
         with open(filepath, 'w') as f:
             json.dump(state, f, indent=2)
     
@@ -65,3 +73,5 @@ class BaseAgent(ABC):
         self.values = np.array(state["values"])
         self.total_reward = state["total_reward"]
         self.total_pulls = state["total_pulls"]
+        
+        return state # Return state dict for subclasses to use
