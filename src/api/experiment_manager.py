@@ -4,6 +4,7 @@ import json
 from datetime import datetime
 from src.agents import EpsilonGreedy, ThompsonSampling, UCB
 from .models import AlgorithmType
+from src.monitoring.mlflow_tracker import tracker
 
 class ExperimentManager:
     """Manages multiple MAB experiments"""
@@ -13,14 +14,7 @@ class ExperimentManager:
         self.storage_dir = storage_dir
         os.makedirs(storage_dir, exist_ok=True)
     
-    def create_experiment(
-        self, 
-        name: str, 
-        arms: list, 
-        algorithm: AlgorithmType,
-        epsilon: float = 0.1,
-        c: float = 2.0
-    ):
+    def create_experiment(self, name: str, arms: list, algorithm: AlgorithmType, epsilon: float = 0.1, c: float = 2.0):
         """Create new experiment"""
         if name in self.experiments:
             raise ValueError(f"Experiment '{name}' already exists")
@@ -43,8 +37,18 @@ class ExperimentManager:
             "algorithm": algorithm.value
         }
         
+        with tracker.start_run(run_name=name, tags={"algorithm": algorithm.value}):
+            tracker.log_params({
+                "n_arms": n_arms,
+                "algorithm": algorithm.value,
+                "epsilon": epsilon if algorithm == AlgorithmType.EPSILON_GREEDY else None,
+                "c": c if algorithm == AlgorithmType.UCB else None,
+                "arms": ",".join(arms)
+            })
+        
         # Save initial state
         self._save_experiment(name)
+        
         
         return {"message": f"Experiment '{name}' created successfully"}
     
@@ -65,6 +69,10 @@ class ExperimentManager:
         """Update reward for selected arm"""
         agent = self.get_experiment(name)
         agent.update(arm, reward)
+
+        with tracker.start_run(run_name=name):
+            tracker.log_agent_state(agent, step=agent.total_pulls)
+
         self._save_experiment(name)
     
     def get_stats(self, name: str) -> dict:
