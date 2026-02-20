@@ -1,0 +1,23 @@
+{
+  "n_arms": 3,
+  "arm_names": [
+    "Ad_Creative_A",
+    "Ad_Creative_B",
+    "Ad_Creative_C"
+  ],
+  "counts": [
+    31.0,
+    816.0,
+    153.0
+  ],
+  "values": [
+    0.06451612903225806,
+    0.07965686274509806,
+    0.09803921568627458
+  ],
+  "total_reward": 82.0,
+  "total_pulls": 1000,
+  "timestamp": "2026-02-20T14:27:10.427989",
+  "algorithm": "epsilon_greedy",
+  "epsilon": 0.1
+}

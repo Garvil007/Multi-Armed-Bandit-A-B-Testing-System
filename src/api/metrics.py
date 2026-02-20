@@ -1,6 +1,4 @@
 from prometheus_client import Counter, Histogram, Gauge, generate_latest, CONTENT_TYPE_LATEST
-from fastapi import Response
-from src.api.app import app
 
 # Define metrics
 arm_selections = Counter(
@@ -35,8 +33,3 @@ def track_reward(experiment: str, reward: float):
     """Track reward"""
     rewards_total.labels(experiment=experiment).inc()
     reward_distribution.labels(experiment=experiment).observe(reward)
-
-@app.get("/metrics")
-def metrics():
-    """Prometheus metrics endpoint"""
-    return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)

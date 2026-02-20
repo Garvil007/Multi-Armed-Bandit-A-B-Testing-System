@@ -1,5 +1,6 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Response
 from fastapi.middleware.cors import CORSMiddleware
+from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
 from datetime import datetime
 import uvicorn
 
@@ -11,7 +12,7 @@ from .models import (
     ExperimentStats
 )
 from .experiment_manager import ExperimentManager
-from .metrics import metrics, track_arm_selection, track_reward
+from .metrics import track_arm_selection, track_reward
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -126,6 +127,11 @@ def delete_experiment(name: str):
 @app.get("/health")
 def health_check():
     return {"status": "healthy", "timestamp": datetime.now().isoformat()}
+
+@app.get("/metrics")
+def prometheus_metrics():
+    """Prometheus metrics endpoint"""
+    return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
