@@ -8,27 +8,34 @@ class UCB(BaseAgent):
         super().__init__(n_arms, arm_names)
         self.c = c  # Exploration parameter
         self.algorithm_name = "ucb"
+        self._pending = set()  # arms selected but not yet updated (initial exploration)
     
     def select_arm(self) -> int:
         """
         Select arm using UCB formula:
         UCB = mean_reward + c * sqrt(ln(total_pulls) / arm_pulls)
+
+        During initial exploration every arm is pulled once.
+        _pending tracks arms that have been selected but whose counts
+        haven't been updated yet, so back-to-back select_arm() calls
+        (without interleaved update()) still explore all arms.
         """
-        # Pull each arm once initially
         for arm in range(self.n_arms):
-            if self.counts[arm] == 0:
+            if self.counts[arm] == 0 and arm not in self._pending:
+                self._pending.add(arm)
                 return arm
-        
-        # Calculate UCB for each arm
-        # Avoid division by zero (though handled by initial pull check)
-        # Using 1e-5 to prevent runtime warning if counts somehow 0
+
+        # All arms visited — apply UCB formula
         safe_counts = np.maximum(self.counts, 1e-5)
-        
         ucb_values = self.values + self.c * np.sqrt(
-            np.log(self.total_pulls) / safe_counts
+            np.log(max(self.total_pulls, 1)) / safe_counts
         )
-        
-        return np.argmax(ucb_values)
+        return int(np.argmax(ucb_values))
+
+    def update(self, arm: int, reward: float):
+        """Update reward and remove arm from pending set."""
+        self._pending.discard(arm)
+        super().update(arm, reward)
     
     def get_stats(self) -> dict:
         """Extended stats with c parameter"""
