@@ -1,3 +1,6 @@
 [tool.pytest.ini_options]
 pythonpath = "."
 testpaths = ["tests"]
+markers = [
+    "integration: deployment tests that require live API/Streamlit servers (skip in CI with -m 'not integration')",
+]
