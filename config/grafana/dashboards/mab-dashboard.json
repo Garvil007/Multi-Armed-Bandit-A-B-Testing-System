@@ -1,0 +1,84 @@
+{
+    "dashboard": {
+        "title": "MAB A/B Testing Dashboard",
+        "tags": [
+            "mab",
+            "reinforcement-learning"
+        ],
+        "timezone": "browser",
+        "panels": [
+            {
+                "id": 1,
+                "title": "Total Arm Selections",
+                "type": "graph",
+                "targets": [
+                    {
+                        "expr": "sum by (arm) (mab_arm_selections_total)",
+                        "legendFormat": "{{arm}}"
+                    }
+                ],
+                "gridPos": {
+                    "h": 8,
+                    "w": 12,
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            {
+                "id": 2,
+                "title": "Reward Rate",
+                "type": "graph",
+                "targets": [
+                    {
+                        "expr": "rate(mab_rewards_total[5m])",
+                        "legendFormat": "{{experiment}}"
+                    }
+                ],
+                "gridPos": {
+                    "h": 8,
+                    "w": 12,
+                    "x": 12,
+                    "y": 0
+                }
+            },
+            {
+                "id": 3,
+                "title": "Average Reward Distribution",
+                "type": "heatmap",
+                "targets": [
+                    {
+                        "expr": "histogram_quantile(0.5, rate(mab_reward_value_bucket[5m]))",
+                        "legendFormat": "p50"
+                    }
+                ],
+                "gridPos": {
+                    "h": 8,
+                    "w": 24,
+                    "x": 0,
+                    "y": 8
+                }
+            },
+            {
+                "id": 4,
+                "title": "Active Experiments",
+                "type": "stat",
+                "targets": [
+                    {
+                        "expr": "mab_active_experiments"
+                    }
+                ],
+                "gridPos": {
+                    "h": 4,
+                    "w": 6,
+                    "x": 0,
+                    "y": 16
+                }
+            }
+        ],
+        "refresh": "5s",
+        "time": {
+            "from": "now-1h",
+            "to": "now"
+        }
+    }
+}

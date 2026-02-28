@@ -1,126 +1,150 @@
-# Multi-Armed Bandit A/B Testing System
+# Multi-Armed Bandit A/B Testing Platform
 
-Production-ready dynamic content recommendation system using Multi-Armed Bandit algorithms with full MLOps pipeline.
+Complete MLOps platform for dynamic A/B testing using Multi-Armed Bandit algorithms with interactive Streamlit dashboard.
 
-## Features
+## 🎯 Features
 
+### Core Capabilities
 - **3 MAB Algorithms**: Epsilon-Greedy, Thompson Sampling, UCB
-- **REST API**: FastAPI-based service
+- **REST API**: FastAPI-based microservice
+- **Interactive Dashboard**: Real-time Streamlit interface
 - **Experiment Tracking**: MLflow integration
-- **Monitoring**: Prometheus + Grafana dashboards
-- **Containerized**: Docker & Docker Compose
-- **CI/CD**: GitHub Actions pipeline
-- **Testing**: Pytest with >90% coverage
+- **Monitoring**: Prometheus + Grafana
+- **Containerized**: Full Docker Compose stack
 
-## Quick Start
+### Dashboard Features
+- 🏠 Overview with quick stats
+- 🧪 Experiment creation and management
+- 📊 Real-time analytics and visualizations
+- 🎯 Interactive simulation with custom scenarios
+- ⚙️ Configuration and settings
 
-### Local Development
+## 🚀 Quick Start
+
+### Using Docker Compose (Recommended)
 ```bash
 # Clone repository
-git clone <your-repo-url>
+git clone <your-repo>
 cd mab-ab-testing
 
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Run API
-uvicorn src.api.app:app --reload
-
-# Access API docs
-open http://localhost:8000/docs
-```
-
-### Docker Deployment
-```bash
 # Start all services
 docker-compose up -d
 
-# Access services
-# API: http://localhost:8000
-# Prometheus: http://localhost:9090
-# Grafana: http://localhost:3000 (admin/admin)
+# Access applications
+# Streamlit: http://localhost:8501
+# API Docs: http://localhost:8000/docs
+# Grafana: http://localhost:3000
 ```
 
-## API Usage
-
-### Create Experiment
+### Local Development
 ```bash
-curl -X POST http://localhost:8000/experiments \
-  -H "Content-Type: application/json" \
-  -d '{
-    "experiment_name": "homepage_banner",
-    "arms": ["Banner_A", "Banner_B", "Banner_C"],
-    "algorithm": "thompson_sampling"
-  }'
+# Backend
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+uvicorn src.api.app:app --reload
+
+# Frontend (new terminal)
+streamlit run streamlit_app/app.py
 ```
 
-### Select Arm
-```bash
-curl -X POST http://localhost:8000/select \
-  -H "Content-Type: application/json" \
-  -d '{
-    "experiment_name": "homepage_banner",
-    "user_id": "user123"
-  }'
+## 📊 Using the Dashboard
+
+### 1. Create Experiment
+- Navigate to 🧪 Experiments tab
+- Click "Create New"
+- Configure arms and algorithm
+- Launch experiment
+
+### 2. Run Simulations
+- Go to 🎯 Simulate tab
+- Select experiment
+- Configure true conversion rates
+- Run simulations and analyze
+
+### 3. Monitor Performance
+- View 📊 Analytics for real-time metrics
+- Track convergence and regret
+- Export data for analysis
+
+## 🏗️ Architecture
+```
+┌─────────────────┐
+│   Streamlit     │  ← User Interface
+│   Dashboard     │
+└────────┬────────┘
+         │ HTTP
+┌────────▼────────┐
+│   FastAPI       │  ← Business Logic
+│   Backend       │
+└────────┬────────┘
+         │
+    ┌────┴────┬─────────┬──────────┐
+    │         │         │          │
+┌───▼───┐ ┌──▼──┐ ┌────▼────┐ ┌──▼──────┐
+│MLflow │ │Prom │ │ Models  │ │ Grafana │
+└───────┘ └─────┘ └─────────┘ └─────────┘
 ```
 
-### Update Reward
-```bash
-curl -X POST http://localhost:8000/update \
-  -H "Content-Type: application/json" \
-  -d '{
-    "experiment_name": "homepage_banner",
-    "arm_index": 0,
-    "reward": 1.0
-  }'
-```
-
-### Get Statistics
-```bash
-curl http://localhost:8000/experiments/homepage_banner/stats
-```
-
-## Project Structure
+## 📁 Project Structure
 ```
 mab-ab-testing/
 ├── src/
-│   ├── agents/           # MAB algorithms
-│   ├── api/              # FastAPI application
-│   └── monitoring/       # MLflow tracking
-├── tests/                # Unit tests
-├── notebooks/            # Jupyter notebooks
-├── docker/               # Docker configuration
-├── config/               # Prometheus & Grafana config
-└── models/               # Saved agent states
+│   ├── agents/          # MAB algorithms
+│   ├── api/             # FastAPI application
+│   └── monitoring/      # MLflow tracking
+├── streamlit_app/       # Streamlit dashboard
+│   ├── pages/          # Dashboard pages
+│   ├── utils/          # Helper utilities
+│   └── config.py       # Configuration
+├── tests/              # Test suite
+├── docker/             # Docker configurations
+├── config/             # Monitoring configs
+└── notebooks/          # Analysis notebooks
 ```
 
-## Monitoring
-
-- **Prometheus Metrics**: http://localhost:9090
-- **Grafana Dashboard**: http://localhost:3000
-- **MLflow UI**: `mlflow ui` (http://localhost:5000)
-
-## Testing
+## 🧪 Testing
 ```bash
 # Run all tests
 pytest tests/ -v
 
-# With coverage
+# Test with coverage
 pytest tests/ --cov=src --cov-report=html
+
+# Test deployment
+pytest tests/test_streamlit.py -v
 ```
 
-## Contributing
+## 📚 Documentation
+
+- [API Documentation](http://localhost:8000/docs)
+- [Deployment Guide](DEPLOYMENT.md)
+- [Launch Checklist](LAUNCH_CHECKLIST.md)
+- [Architecture Overview](docs/ARCHITECTURE.md)
+
+## 🎓 Learning Resources
+
+- [Sutton & Barto - RL Book](http://incompleteideas.net/book/the-book.html)
+- [Bandit Algorithms](https://tor-lattimore.com/downloads/book/book.pdf)
+- [FastAPI Tutorial](https://fastapi.tiangolo.com/tutorial/)
+- [Streamlit Docs](https://docs.streamlit.io/)
+
+## 🤝 Contributing
 
 1. Fork the repository
-2. Create feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open Pull Request
+2. Create feature branch
+3. Make your changes
+4. Add tests
+5. Submit pull request
 
-## License
+## 📝 License
 
-MIT License
+MIT License - see LICENSE file
+
+## 🙏 Acknowledgments
+
+Built for learning Reinforcement Learning and MLOps best practices.
+
+---
+
+**Ready to optimize your A/B tests? Start the dashboard and create your first experiment!** 🚀
