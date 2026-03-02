@@ -1,0 +1,23 @@
+{
+  "n_arms": 3,
+  "arm_names": [
+    "Variant_A",
+    "Variant_B",
+    "Variant_C"
+  ],
+  "counts": [
+    17.0,
+    23.0,
+    40.0
+  ],
+  "values": [
+    0.05882352941176473,
+    0.08695652173913045,
+    0.10000000000000003
+  ],
+  "total_reward": 7.0,
+  "total_pulls": 80,
+  "timestamp": "2026-03-02T18:03:42.120354",
+  "algorithm": "epsilon_greedy",
+  "epsilon": 0.2
+}

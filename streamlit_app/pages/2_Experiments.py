@@ -91,11 +91,11 @@ with tab1:
                         st.write("**Quick Actions:**")
                         if st.button("📊 View Analytics", key=f"analytics_{exp['name']}"):
                             SessionState.set('current_experiment', exp['name'])
-                            st.switch_page("pages/3_📊_Analytics.py")
+                            st.switch_page("pages/3_Analytics.py")
                         
                         if st.button("🎯 Simulate", key=f"simulate_{exp['name']}"):
                             SessionState.set('current_experiment', exp['name'])
-                            st.switch_page("pages/4_🎯_Simulate.py")
+                            st.switch_page("pages/4_Simulate.py")
     
     except Exception as e:
         st.error(f"Error loading experiments: {str(e)}")
